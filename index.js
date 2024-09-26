@@ -3,7 +3,38 @@ const searchButton = document.getElementById('search-button');
 const mealList = document.getElementById('results-container');
 const ingredientsBox = document.querySelector('.ingridients-list');
 
+const tomatoButton = document.getElementById('Tomato');
+const onionButton = document.getElementById('Onion');
+const garlicButton = document.getElementById('Garlic');
+const potatoButton = document.getElementById('Potato');
+const chickenButton = document.getElementById('Chicken');
+const carrotButton = document.getElementById('Carrot');
+const eggButton = document.getElementById('Egg');
+const cheeseButton = document.getElementById('Cheese');
+
 let selectedIngredients = [];
+
+// I used chatgpt for this one because i tried really hard to think of a way i can do this, and didnt get an idea, my only idea was giving an onclick function to each button
+const ingredientButtons = [
+  { button: tomatoButton, name: 'Tomato' },
+  { button: onionButton, name: 'Onion' },
+  { button: garlicButton, name: 'Garlic' },
+  { button: potatoButton, name: 'Potato' },
+  { button: chickenButton, name: 'Chicken' },
+  { button: carrotButton, name: 'Carrot' },
+  { button: eggButton, name: 'Egg' },
+  { button: cheeseButton, name: 'Cheese' },
+];
+
+ingredientButtons.forEach(({ button, name }) => {
+  button.addEventListener('click', () => {
+    if (!selectedIngredients.includes(name)) {
+      addIngredient(name);
+      selectedIngredients.push(name);
+      getMealList();
+    }
+  });
+});
 
 searchButton.addEventListener('click', () => {
   const searchInputTxt = textBox.value.trim();
@@ -11,7 +42,7 @@ searchButton.addEventListener('click', () => {
   if (searchInputTxt && !selectedIngredients.includes(searchInputTxt)) {
     addIngredient(searchInputTxt);
     selectedIngredients.push(searchInputTxt);
-    textBox.value = ''; // Clear the input box after adding the ingredient
+    textBox.value = '';
     getMealList();
   }
 });
@@ -21,20 +52,19 @@ function addIngredient(ingredient) {
   ingredientButton.textContent = ingredient;
   ingredientButton.className = 'ingredient';
 
-  // Remove the ingredient when clicked
   ingredientButton.addEventListener('click', () => {
     selectedIngredients = selectedIngredients.filter(
       (ing) => ing !== ingredient
     );
     ingredientButton.remove();
-    getMealList(); // Re-fetch meals after an ingredient is removed
+    getMealList();
   });
 
   ingredientsBox.appendChild(ingredientButton);
 }
 
 function getMealList() {
-  mealList.innerHTML = ''; // Clear previous meals
+  mealList.innerHTML = '';
 
   selectedIngredients.forEach((ingredient) => {
     fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingredient}`)
@@ -50,7 +80,6 @@ function getMealList() {
 
 function displayMeals(meals) {
   meals.forEach((meal) => {
-    // Avoid duplicating the same meal
     if (!document.getElementById(`recipe-${meal.idMeal}`)) {
       const recipeDiv = document.createElement('div');
       recipeDiv.className = 'recipe';
