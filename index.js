@@ -14,6 +14,16 @@ const cheeseButton = document.getElementById('Cheese');
 
 let selectedIngredients = [];
 
+const toggleButton = document.getElementById('toggle-ingredients-btn');
+const sidebar = document.getElementById('ingredients-sidebar');
+
+toggleButton.addEventListener('click', () => {
+  sidebar.classList.toggle('active');
+  toggleButton.textContent = sidebar.classList.contains('active')
+    ? 'Hide Ingredients'
+    : 'Show Ingredients';
+});
+
 // I used chatgpt for this one because i tried really hard to think of a way i can do this, and didnt get an idea, my only idea was giving an onclick function to each button
 const ingredientButtons = [
   { button: tomatoButton, name: 'Tomato' },
