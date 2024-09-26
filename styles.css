@@ -133,13 +133,18 @@ button:hover {
 .ingredients-sidebar {
   position: fixed;
   top: 50px;
-  right: 0;
+  right: -250px; /* Start hidden */
   width: 200px;
   padding: 20px;
   background-color: #f1f1f1;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
   border-radius: 8px 0 0 8px;
   height: calc(100vh - 100px);
+  transition: right 0.3s ease-in-out;
+}
+
+.ingredients-sidebar.active {
+  right: 0; /* Slide in when active */
 }
 
 .ingredients-sidebar h3 {
@@ -150,4 +155,24 @@ button:hover {
 .ingredients-sidebar button {
   width: 100%;
   margin-bottom: 10px;
+}
+
+/* Toggle Button */
+.toggle-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 15px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-button:hover {
+  background-color: #0056b3;
+  transform: scale(1.1);
 }
