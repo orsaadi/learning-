@@ -1,0 +1,89 @@
+const textBox = document.getElementById('ingredient-input');
+const searchButton = document.getElementById('search-button');
+const mealList = document.getElementById('results-container');
+const ingredientsBox = document.querySelector('.ingridients-list');
+
+let selectedIngredients = [];
+
+searchButton.addEventListener('click', () => {
+  const searchInputTxt = textBox.value.trim();
+
+  if (searchInputTxt && !selectedIngredients.includes(searchInputTxt)) {
+    addIngredient(searchInputTxt);
+    selectedIngredients.push(searchInputTxt);
+    textBox.value = ''; // Clear the input box after adding the ingredient
+    getMealList();
+  }
+});
+
+function addIngredient(ingredient) {
+  const ingredientButton = document.createElement('button');
+  ingredientButton.textContent = ingredient;
+  ingredientButton.className = 'ingredient';
+
+  // Remove the ingredient when clicked
+  ingredientButton.addEventListener('click', () => {
+    selectedIngredients = selectedIngredients.filter(
+      (ing) => ing !== ingredient
+    );
+    ingredientButton.remove();
+    getMealList(); // Re-fetch meals after an ingredient is removed
+  });
+
+  ingredientsBox.appendChild(ingredientButton);
+}
+
+function getMealList() {
+  mealList.innerHTML = ''; // Clear previous meals
+
+  selectedIngredients.forEach((ingredient) => {
+    fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingredient}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.meals) {
+          displayMeals(data.meals);
+        }
+      })
+      .catch((error) => console.error('Error:', error));
+  });
+}
+
+function displayMeals(meals) {
+  meals.forEach((meal) => {
+    // Avoid duplicating the same meal
+    if (!document.getElementById(`recipe-${meal.idMeal}`)) {
+      const recipeDiv = document.createElement('div');
+      recipeDiv.className = 'recipe';
+      recipeDiv.id = `recipe-${meal.idMeal}`;
+
+      const img = document.createElement('img');
+      img.src = meal.strMealThumb;
+      img.alt = meal.strMeal;
+
+      const recipeInfo = document.createElement('div');
+      recipeInfo.className = 'recipe-info';
+
+      const title = document.createElement('h3');
+      title.textContent = meal.strMeal;
+
+      const description = document.createElement('p');
+      description.textContent = 'Click to see the full recipe!';
+
+      const button = document.createElement('button');
+      button.className = 'recipe-button';
+      button.textContent = 'See Recipe';
+      button.onclick = () => {
+        window.open(`https://www.themealdb.com/meal/${meal.idMeal}`, '_blank');
+      };
+
+      recipeInfo.appendChild(title);
+      recipeInfo.appendChild(description);
+      recipeInfo.appendChild(button);
+
+      recipeDiv.appendChild(img);
+      recipeDiv.appendChild(recipeInfo);
+
+      mealList.appendChild(recipeDiv);
+    }
+  });
+}
